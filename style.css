@@ -76,6 +76,18 @@ header h1 {
     z-index: 1;
 }
 
+.controls-container {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.zoom-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 /* --- Responsive Header Styles --- */
 
 .mobile-menu-btn {
@@ -299,18 +311,6 @@ header h1 {
 
 .event-link:hover {
     text-decoration: underline;
-}
-
-.controls-container {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-.zoom-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 /* The switch - the box around the slider */
