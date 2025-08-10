@@ -1,0 +1,102 @@
+body {
+    font-family: sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.search-container {
+    font-size: 1.2em;
+}
+
+#timeline-container {
+    position: relative;
+    margin: 0 auto;
+    padding: 20px 0;
+    width: 90%;
+    max-width: 800px;
+}
+
+/* The vertical line */
+#timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 40px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #ddd;
+}
+
+.year-container {
+    margin-bottom: 30px;
+}
+
+.year-marker {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-left: 60px; /* To the right of the timeline */
+}
+
+.event {
+    margin-bottom: 10px;
+    padding-left: 60px; /* To the right of the timeline */
+    position: relative;
+}
+
+/* The dot on the timeline */
+.event::before {
+    content: '';
+    position: absolute;
+    left: 32px; /* Centered on the line */
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.event-name {
+    font-weight: bold;
+}
+
+.event-dates {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.event-description {
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+.event-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.event-link:hover {
+    text-decoration: underline;
+}
