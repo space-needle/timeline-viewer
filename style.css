@@ -212,6 +212,7 @@ input:checked + .slider:before {
 .event-title {
     margin-bottom: 5px;
     font-size: 1em;
+    cursor: pointer;
 }
 
 /* Scoping for views */

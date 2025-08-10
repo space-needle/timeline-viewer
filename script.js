@@ -160,6 +160,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const title = document.createElement('div');
                 title.className = 'event-title';
                 title.textContent = event.name;
+
+                title.addEventListener('click', () => {
+                    // Switch to month view
+                    currentView = 'month';
+                    zoomToggle.checked = true;
+                    render();
+
+                    // Find the target month and scroll to it
+                    const eventDate = new Date(event.startDate);
+                    const year = eventDate.getFullYear();
+                    const month = String(eventDate.getMonth() + 1).padStart(2, '0');
+
+                    const targetElement = document.getElementById(`month-${year}-${month}`);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+
                 titlesContainer.appendChild(title);
             });
 
