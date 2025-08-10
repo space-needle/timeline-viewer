@@ -23,11 +23,41 @@
             <div class="search-container">
                 <i class="fas fa-search"></i>
             </div>
+            <button id="add-event-btn" class="add-btn"><i class="fas fa-plus"></i> Add Event</button>
         </div>
     </header>
     <div id="timeline-container">
         <!-- Events will be dynamically inserted here -->
     </div>
     <script src="script.js"></script>
+
+    <!-- The Modal -->
+    <div id="add-event-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Add New Event</h2>
+            <form id="add-event-form">
+                <label for="event-name-input">Event Name:</label>
+                <input type="text" id="event-name-input" name="name" required>
+
+                <label for="start-date-input">Start Date:</label>
+                <input type="date" id="start-date-input" name="startDate" required>
+
+                <label for="end-date-input">End Date:</label>
+                <input type="date" id="end-date-input" name="endDate">
+
+                <label for="description-input">Description:</label>
+                <textarea id="description-input" name="description"></textarea>
+
+                <label for="photo-album-input">Photo Album Link:</label>
+                <input type="url" id="photo-album-input" name="photoAlbum">
+
+                <label for="metadata-input">Metadata (key:value, one per line):</label>
+                <textarea id="metadata-input" name="metadata"></textarea>
+
+                <button type="submit">Save Event</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

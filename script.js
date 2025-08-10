@@ -267,4 +267,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     render(); // Initial render
+
+
+    // --- Modal Logic ---
+    const modal = document.getElementById('add-event-modal');
+    const addEventBtn = document.getElementById('add-event-btn');
+    const closeBtn = document.querySelector('.close-btn');
+    const addEventForm = document.getElementById('add-event-form');
+
+    // Show modal
+    addEventBtn.addEventListener('click', () => {
+        modal.style.display = 'block';
+    });
+
+    // Hide modal with close button
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // Hide modal when clicking outside of it
+    window.addEventListener('click', (event) => {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Handle form submission (placeholder)
+    addEventForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        console.log('Form submitted!');
+        const formData = new FormData(addEventForm);
+        const newEvent = Object.fromEntries(formData.entries());
+        console.log('New Event Data:', newEvent);
+        modal.style.display = 'none'; // Hide modal after submission
+        addEventForm.reset(); // Clear the form
+    });
 });
