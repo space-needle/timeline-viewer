@@ -47,16 +47,18 @@ header h1 {
     margin-bottom: 30px;
 }
 
+.year-container {
+    padding-left: 60px; /* To the right of the timeline */
+}
+
 .year-marker {
     font-size: 1.5em;
     font-weight: bold;
     margin-bottom: 10px;
-    padding-left: 60px; /* To the right of the timeline */
 }
 
 .event {
     margin-bottom: 10px;
-    padding-left: 60px; /* To the right of the timeline */
     position: relative;
 }
 
@@ -99,4 +101,155 @@ header h1 {
 
 .event-link:hover {
     text-decoration: underline;
+}
+
+.controls-container {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.zoom-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #007bff;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #007bff;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* New styles for Year View */
+.year-data-container {
+    display: flex;
+    position: relative;
+    min-height: 150px; /* Give each year section some space */
+}
+
+.heatmap-container {
+    position: absolute;
+    left: -28px; /* Position it on top of the timeline line */
+    top: 0;
+    bottom: 0;
+    width: 12px;
+}
+
+.heatmap-dot {
+    position: absolute;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #007bff;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    border: 2px solid white;
+    cursor: pointer;
+}
+
+.titles-container {
+    padding-left: 10px; /* Space from the heatmap */
+}
+
+.event-title {
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+
+/* Scoping for views */
+.month-view .year-data-container {
+    display: none; /* Hide year view elements in month view */
+}
+
+.year-view .event {
+    display: none; /* Hide month view elements in year view */
+}
+
+/* Make year marker clickable */
+.year-marker {
+    cursor: pointer;
+}
+
+.month-container {
+    margin-bottom: 30px;
+    padding-left: 60px;
+}
+
+.month-marker {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+/* Add a dot for the month marker on the timeline */
+.month-marker::before {
+    content: '';
+    position: absolute;
+    left: -28px; /* Adjust to align with the timeline line */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background: #555;
+    border-radius: 50%;
+    z-index: 1;
 }

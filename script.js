@@ -63,66 +63,187 @@ const events = [
     }
 ];
 
+// Helper function to get day of the year (1-366)
+function getDayOfYear(date) {
+    const start = new Date(date.getFullYear(), 0, 0);
+    const diff = (date - start) + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
+    const oneDay = 1000 * 60 * 60 * 24;
+    return Math.floor(diff / oneDay);
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const timelineContainer = document.getElementById('timeline-container');
+    const zoomToggle = document.getElementById('zoom-toggle');
 
-    // Group events by year
-    const eventsByYear = events.reduce((acc, event) => {
-        const year = new Date(event.startDate).getFullYear();
-        if (!acc[year]) {
-            acc[year] = [];
+    let currentView = 'year'; // 'year' or 'month'
+
+    function render() {
+        timelineContainer.innerHTML = ''; // Clear previous content
+        if (currentView === 'year') {
+            renderYearView();
+        } else {
+            renderMonthView();
         }
-        acc[year].push(event);
-        return acc;
-    }, {});
+    }
 
-    // Sort years in descending order
-    const sortedYears = Object.keys(eventsByYear).sort((a, b) => b - a);
-
-    // Create and append elements for each year and event
-    sortedYears.forEach(year => {
-        const yearContainer = document.createElement('div');
-        yearContainer.className = 'year-container';
-
-        const yearMarker = document.createElement('div');
-        yearMarker.className = 'year-marker';
-        yearMarker.textContent = year;
-        yearContainer.appendChild(yearMarker);
-
-        // Sort events within the year by start date
-        eventsByYear[year].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-
-        eventsByYear[year].forEach(event => {
-            const eventElement = document.createElement('div');
-            eventElement.className = 'event';
-
-            const eventName = document.createElement('div');
-            eventName.className = 'event-name';
-            eventName.textContent = event.name;
-            eventElement.appendChild(eventName);
-
-            const eventDates = document.createElement('div');
-            eventDates.className = 'event-dates';
-            eventDates.textContent = `${event.startDate} - ${event.endDate}`;
-            eventElement.appendChild(eventDates);
-
-            const eventDescription = document.createElement('div');
-            eventDescription.className = 'event-description';
-            eventDescription.textContent = event.description;
-            eventElement.appendChild(eventDescription);
-
-            if (event.photoAlbum) {
-                const eventLink = document.createElement('a');
-                eventLink.className = 'event-link';
-                eventLink.href = event.photoAlbum;
-                eventLink.textContent = 'View Photo Album';
-                eventLink.target = '_blank'; // Open in new tab
-                eventElement.appendChild(eventLink);
+    function renderYearView() {
+        timelineContainer.className = 'timeline-container year-view';
+        const eventsByYear = events.reduce((acc, event) => {
+            const year = new Date(event.startDate).getFullYear();
+            if (!acc[year]) {
+                acc[year] = [];
             }
+            acc[year].push(event);
+            return acc;
+        }, {});
 
-            yearContainer.appendChild(eventElement);
+        const sortedYears = Object.keys(eventsByYear).sort((a, b) => b - a);
+
+        sortedYears.forEach(year => {
+            const yearContainer = document.createElement('div');
+            yearContainer.className = 'year-container';
+            yearContainer.dataset.year = year;
+
+            const yearMarker = document.createElement('div');
+            yearMarker.className = 'year-marker';
+            yearMarker.textContent = year;
+
+            yearMarker.addEventListener('click', () => {
+                currentView = 'month';
+                zoomToggle.checked = true;
+                render();
+
+                // Find the latest month in the clicked year and scroll to it
+                const yearEvents = events.filter(e => new Date(e.startDate).getFullYear() == year);
+                if (yearEvents.length > 0) {
+                    yearEvents.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+                    const latestEvent = yearEvents[0];
+                    const latestMonth = String(new Date(latestEvent.startDate).getMonth() + 1).padStart(2, '0');
+
+                    const targetElement = document.getElementById(`month-${year}-${latestMonth}`);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+
+            yearContainer.appendChild(yearMarker);
+
+            const yearDataContainer = document.createElement('div');
+            yearDataContainer.className = 'year-data-container';
+
+            const heatmapContainer = document.createElement('div');
+            heatmapContainer.className = 'heatmap-container';
+
+            const titlesContainer = document.createElement('div');
+            titlesContainer.className = 'titles-container';
+
+            eventsByYear[year].forEach(event => {
+                // Create heatmap dot
+                const eventDate = new Date(event.startDate);
+                const dayOfYear = getDayOfYear(eventDate);
+                const isLeap = new Date(year, 1, 29).getMonth() === 1;
+                const yearLength = isLeap ? 366 : 365;
+                const position = (dayOfYear / yearLength) * 100;
+
+                const dot = document.createElement('div');
+                dot.className = 'heatmap-dot';
+                dot.style.top = `${position}%`;
+                dot.title = `${event.name} - ${event.startDate}`;
+                heatmapContainer.appendChild(dot);
+
+                // Create title element
+                const title = document.createElement('div');
+                title.className = 'event-title';
+                title.textContent = event.name;
+                titlesContainer.appendChild(title);
+            });
+
+            yearDataContainer.appendChild(heatmapContainer);
+            yearDataContainer.appendChild(titlesContainer);
+            yearContainer.appendChild(yearDataContainer);
+            timelineContainer.appendChild(yearContainer);
         });
+    }
 
-        timelineContainer.appendChild(yearContainer);
+    function renderMonthView() {
+        timelineContainer.className = 'timeline-container month-view';
+
+        // 1. Group events by month (YYYY-MM)
+        const eventsByMonth = events.reduce((acc, event) => {
+            const eventDate = new Date(event.startDate);
+            const year = eventDate.getFullYear();
+            const month = String(eventDate.getMonth() + 1).padStart(2, '0'); // 01-12
+            const key = `${year}-${month}`;
+
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+            acc[key].push(event);
+            return acc;
+        }, {});
+
+        // 2. Sort month keys
+        const sortedMonths = Object.keys(eventsByMonth).sort().reverse();
+
+        // 3. Render
+        sortedMonths.forEach(monthKey => {
+            const [year, monthNum] = monthKey.split('-');
+            const monthName = new Date(year, monthNum - 1, 1).toLocaleString('default', { month: 'long' });
+
+            const monthContainer = document.createElement('div');
+            monthContainer.className = 'month-container';
+            monthContainer.id = `month-${monthKey}`;
+
+            const monthMarker = document.createElement('div');
+            monthMarker.className = 'month-marker';
+            monthMarker.textContent = `${monthName} ${year}`;
+            monthContainer.appendChild(monthMarker);
+
+            // Sort events within the month
+            eventsByMonth[monthKey].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+            eventsByMonth[monthKey].forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.className = 'event';
+
+                const eventName = document.createElement('div');
+                eventName.className = 'event-name';
+                eventName.textContent = event.name;
+                eventElement.appendChild(eventName);
+
+                const eventDates = document.createElement('div');
+                eventDates.className = 'event-dates';
+                eventDates.textContent = `${event.startDate} - ${event.endDate}`;
+                eventElement.appendChild(eventDates);
+
+                const eventDescription = document.createElement('div');
+                eventDescription.className = 'event-description';
+                eventDescription.textContent = event.description;
+                eventElement.appendChild(eventDescription);
+
+                if (event.photoAlbum) {
+                    const eventLink = document.createElement('a');
+                    eventLink.className = 'event-link';
+                    eventLink.href = event.photoAlbum;
+                    eventLink.textContent = 'View Photo Album';
+                    eventLink.target = '_blank';
+                    eventElement.appendChild(eventLink);
+                }
+                monthContainer.appendChild(eventElement);
+            });
+            timelineContainer.appendChild(monthContainer);
+        });
+    }
+
+    zoomToggle.addEventListener('change', () => {
+        currentView = zoomToggle.checked ? 'month' : 'year';
+        render();
     });
+
+    render(); // Initial render
 });
