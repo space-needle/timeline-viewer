@@ -1,3 +1,12 @@
+// 1. SUPABASE SETUP - Replace with your project details from supabase.com
+const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+// 2. Initialize Supabase Client
+// Ensure the Supabase library is loaded before this script in your HTML
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// 3. Hardcoded event data (will be replaced by DB call later)
 const events = [
     {
         name: "Trip to Korea",
@@ -71,13 +80,31 @@ function getDayOfYear(date) {
     return Math.floor(diff / oneDay);
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
+    // --- DOM ELEMENT REFERENCES ---
     const timelineContainer = document.getElementById('timeline-container');
     const zoomToggle = document.getElementById('zoom-toggle');
+    // Add Event Modal
+    const addEventModal = document.getElementById('add-event-modal');
+    const addEventBtn = document.getElementById('add-event-btn');
+    const addEventCloseBtn = document.querySelector('#add-event-modal .close-btn');
+    const addEventForm = document.getElementById('add-event-form');
+    // Login Modal
+    const loginModal = document.getElementById('login-modal');
+    const loginBtn = document.getElementById('login-btn');
+    const loginCloseBtn = document.querySelector('.login-close-btn');
+    const loginForm = document.getElementById('login-form');
+    const loginSubmitBtn = document.getElementById('login-submit-btn');
+    const signupSubmitBtn = document.getElementById('signup-submit-btn');
+    const authErrorEl = document.getElementById('auth-error');
+    // User Info
+    const userInfoEl = document.getElementById('user-info');
+    const userEmailEl = document.getElementById('user-email');
+    const logoutBtn = document.getElementById('logout-btn');
 
     let currentView = 'year'; // 'year' or 'month'
 
+    // --- RENDER FUNCTIONS (Timeline) ---
     function render() {
         timelineContainer.innerHTML = ''; // Clear previous content
         if (currentView === 'year') {
@@ -114,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 zoomToggle.checked = true;
                 render();
 
-                // Find the latest month in the clicked year and scroll to it
                 const yearEvents = events.filter(e => new Date(e.startDate).getFullYear() == year);
                 if (yearEvents.length > 0) {
                     yearEvents.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
@@ -123,10 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const targetElement = document.getElementById(`month-${year}-${latestMonth}`);
                     if (targetElement) {
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 }
             });
@@ -143,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
             titlesContainer.className = 'titles-container';
 
             eventsByYear[year].forEach(event => {
-                // Create heatmap dot
                 const eventDate = new Date(event.startDate);
                 const dayOfYear = getDayOfYear(eventDate);
                 const isLeap = new Date(year, 1, 29).getMonth() === 1;
@@ -156,28 +178,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 dot.title = `${event.name} - ${event.startDate}`;
                 heatmapContainer.appendChild(dot);
 
-                // Create title element
                 const title = document.createElement('div');
                 title.className = 'event-title';
                 title.textContent = event.name;
 
                 title.addEventListener('click', () => {
-                    // Switch to month view
                     currentView = 'month';
                     zoomToggle.checked = true;
                     render();
 
-                    // Find the target month and scroll to it
                     const eventDate = new Date(event.startDate);
                     const year = eventDate.getFullYear();
                     const month = String(eventDate.getMonth() + 1).padStart(2, '0');
 
                     const targetElement = document.getElementById(`month-${year}-${month}`);
                     if (targetElement) {
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 });
 
@@ -194,11 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderMonthView() {
         timelineContainer.className = 'timeline-container month-view';
 
-        // 1. Group events by month (YYYY-MM)
         const eventsByMonth = events.reduce((acc, event) => {
             const eventDate = new Date(event.startDate);
             const year = eventDate.getFullYear();
-            const month = String(eventDate.getMonth() + 1).padStart(2, '0'); // 01-12
+            const month = String(eventDate.getMonth() + 1).padStart(2, '0');
             const key = `${year}-${month}`;
 
             if (!acc[key]) {
@@ -208,10 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return acc;
         }, {});
 
-        // 2. Sort month keys
         const sortedMonths = Object.keys(eventsByMonth).sort().reverse();
 
-        // 3. Render
         sortedMonths.forEach(monthKey => {
             const [year, monthNum] = monthKey.split('-');
             const monthName = new Date(year, monthNum - 1, 1).toLocaleString('default', { month: 'long' });
@@ -225,19 +238,18 @@ document.addEventListener('DOMContentLoaded', () => {
             monthMarker.textContent = `${monthName} ${year}`;
             monthContainer.appendChild(monthMarker);
 
-            // Sort events within the month
             eventsByMonth[monthKey].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
 
             eventsByMonth[monthKey].forEach(event => {
                 const eventElement = document.createElement('div');
                 eventElement.className = 'event';
-
+                // ... (detailed event rendering)
                 const eventName = document.createElement('div');
                 eventName.className = 'event-name';
                 eventName.textContent = event.name;
                 eventElement.appendChild(eventName);
-
-                const eventDates = document.createElement('div');
+                // ... (and so on for dates, desc, link)
+                 const eventDates = document.createElement('div');
                 eventDates.className = 'event-dates';
                 eventDates.textContent = `${event.startDate} - ${event.endDate}`;
                 eventElement.appendChild(eventDates);
@@ -266,40 +278,83 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
     });
 
-    render(); // Initial render
-
-
-    // --- Modal Logic ---
-    const modal = document.getElementById('add-event-modal');
-    const addEventBtn = document.getElementById('add-event-btn');
-    const closeBtn = document.querySelector('.close-btn');
-    const addEventForm = document.getElementById('add-event-form');
-
-    // Show modal
+    // --- MODAL LOGIC (Add Event) ---
     addEventBtn.addEventListener('click', () => {
-        modal.style.display = 'block';
+        addEventModal.style.display = 'block';
+    });
+    addEventCloseBtn.addEventListener('click', () => {
+        addEventModal.style.display = 'none';
+    });
+    addEventForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        console.log('Add event form submitted');
+        addEventModal.style.display = 'none';
+        addEventForm.reset();
     });
 
-    // Hide modal with close button
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
+    // --- AUTHENTICATION LOGIC ---
+    loginBtn.addEventListener('click', () => {
+        loginModal.style.display = 'block';
+    });
+    loginCloseBtn.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+        authErrorEl.textContent = '';
+    });
+    loginSubmitBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        authErrorEl.textContent = '';
+        const { error } = await supabase.auth.signInWithPassword({
+            email: loginForm.email.value,
+            password: loginForm.password.value,
+        });
+        if (error) {
+            authErrorEl.textContent = error.message;
+        } else {
+            loginModal.style.display = 'none';
+            loginForm.reset();
+        }
+    });
+    signupSubmitBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        authErrorEl.textContent = '';
+        const { error } = await supabase.auth.signUp({
+            email: loginForm.email.value,
+            password: loginForm.password.value,
+        });
+        if (error) {
+            authErrorEl.textContent = error.message;
+        } else {
+            authErrorEl.textContent = 'Success! Check your email for a confirmation link.';
+        }
+    });
+    logoutBtn.addEventListener('click', async () => {
+        await supabase.auth.signOut();
     });
 
-    // Hide modal when clicking outside of it
-    window.addEventListener('click', (event) => {
-        if (event.target == modal) {
-            modal.style.display = 'none';
+    // --- AUTH STATE MANAGEMENT & MODAL CLEANUP ---
+    supabase.auth.onAuthStateChange((_event, session) => {
+        if (session) {
+            userInfoEl.style.display = 'flex';
+            userEmailEl.textContent = session.user.email;
+            loginBtn.style.display = 'none';
+            addEventBtn.style.display = 'block';
+        } else {
+            userInfoEl.style.display = 'none';
+            userEmailEl.textContent = '';
+            loginBtn.style.display = 'block';
+            addEventBtn.style.display = 'none';
         }
     });
 
-    // Handle form submission (placeholder)
-    addEventForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        console.log('Form submitted!');
-        const formData = new FormData(addEventForm);
-        const newEvent = Object.fromEntries(formData.entries());
-        console.log('New Event Data:', newEvent);
-        modal.style.display = 'none'; // Hide modal after submission
-        addEventForm.reset(); // Clear the form
+    window.addEventListener('click', (event) => {
+        if (event.target == addEventModal) {
+            addEventModal.style.display = 'none';
+        }
+        if (event.target == loginModal) {
+            loginModal.style.display = 'none';
+            authErrorEl.textContent = '';
+        }
     });
+
+    render(); // Initial render
 });

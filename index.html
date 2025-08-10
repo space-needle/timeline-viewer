@@ -23,12 +23,18 @@
             <div class="search-container">
                 <i class="fas fa-search"></i>
             </div>
+            <button id="login-btn" class="auth-btn">Login</button>
+            <div id="user-info" style="display: none;">
+                <span id="user-email"></span>
+                <button id="logout-btn" class="auth-btn">Logout</button>
+            </div>
             <button id="add-event-btn" class="add-btn"><i class="fas fa-plus"></i> Add Event</button>
         </div>
     </header>
     <div id="timeline-container">
         <!-- Events will be dynamically inserted here -->
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 
     <!-- The Modal -->
@@ -56,6 +62,27 @@
                 <textarea id="metadata-input" name="metadata"></textarea>
 
                 <button type="submit">Save Event</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- The Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn login-close-btn">&times;</span>
+            <h2>Login / Sign Up</h2>
+            <form id="login-form">
+                <label for="email-input">Email:</label>
+                <input type="email" id="email-input" name="email" required>
+
+                <label for="password-input">Password:</label>
+                <input type="password" id="password-input" name="password" required>
+
+                <div class="form-actions">
+                    <button type="submit" id="login-submit-btn">Login</button>
+                    <button type="button" id="signup-submit-btn">Sign Up</button>
+                </div>
+                <p id="auth-error" class="auth-error"></p>
             </form>
         </div>
     </div>
