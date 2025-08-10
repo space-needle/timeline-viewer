@@ -83,7 +83,8 @@ function getDayOfYear(date) {
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM ELEMENT REFERENCES ---
     const timelineContainer = document.getElementById('timeline-container');
-    const zoomToggle = document.getElementById('zoom-toggle');
+    const zoomInBtn = document.getElementById('zoom-in-btn');
+    const zoomOutBtn = document.getElementById('zoom-out-btn');
     // Add Event Modal
     const addEventModal = document.getElementById('add-event-modal');
     const addEventBtn = document.getElementById('add-event-btn');
@@ -115,6 +116,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             renderMonthView();
         }
+        updateZoomButtons(); // Update button states after every render
+    }
+
+    function updateZoomButtons() {
+        zoomInBtn.disabled = currentView === 'month';
+        zoomOutBtn.disabled = currentView === 'year';
     }
 
     function renderYearView() {
@@ -141,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             yearMarker.addEventListener('click', () => {
                 currentView = 'month';
-                zoomToggle.checked = true;
                 render();
 
                 const yearEvents = events.filter(e => new Date(e.startDate).getFullYear() == year);
@@ -187,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 title.addEventListener('click', () => {
                     currentView = 'month';
-                    zoomToggle.checked = true;
                     render();
 
                     const eventDate = new Date(event.startDate);
@@ -246,12 +251,10 @@ document.addEventListener('DOMContentLoaded', () => {
             eventsByMonth[monthKey].forEach(event => {
                 const eventElement = document.createElement('div');
                 eventElement.className = 'event';
-                // ... (detailed event rendering)
                 const eventName = document.createElement('div');
                 eventName.className = 'event-name';
                 eventName.textContent = event.name;
                 eventElement.appendChild(eventName);
-                // ... (and so on for dates, desc, link)
                  const eventDates = document.createElement('div');
                 eventDates.className = 'event-dates';
                 eventDates.textContent = `${event.startDate} - ${event.endDate}`;
@@ -276,9 +279,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    zoomToggle.addEventListener('change', () => {
-        currentView = zoomToggle.checked ? 'month' : 'year';
-        render();
+    // --- ZOOM LOGIC ---
+    zoomInBtn.addEventListener('click', () => {
+        if (currentView === 'year') {
+            currentView = 'month';
+            render();
+        }
+    });
+
+    zoomOutBtn.addEventListener('click', () => {
+        if (currentView === 'month') {
+            currentView = 'year';
+            render();
+        }
     });
 
     // --- MODAL LOGIC (Add Event) ---
