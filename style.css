@@ -115,7 +115,7 @@ header h1 {
     }
 
     .header-nav.show {
-        display: block; /* Show when toggled */
+        display: block !important; /* Show when toggled */
     }
 
     .controls-container {
