@@ -101,6 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const userInfoEl = document.getElementById('user-info');
     const userEmailEl = document.getElementById('user-email');
     const logoutBtn = document.getElementById('logout-btn');
+    // Mobile Menu
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const headerNav = document.querySelector('.header-nav');
 
     let currentView = 'year'; // 'year' or 'month'
 
@@ -354,6 +357,11 @@ document.addEventListener('DOMContentLoaded', () => {
             loginModal.style.display = 'none';
             authErrorEl.textContent = '';
         }
+    });
+
+    // --- RESPONSIVE HEADER LOGIC ---
+    mobileMenuBtn.addEventListener('click', () => {
+        headerNav.classList.toggle('show');
     });
 
     render(); // Initial render

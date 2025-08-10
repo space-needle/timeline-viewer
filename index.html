@@ -11,25 +11,30 @@
 <body>
     <header>
         <h1>Timeline</h1>
-        <div class="controls-container">
-            <div class="zoom-control">
-                <span>Year</span>
-                <label class="switch">
-                    <input type="checkbox" id="zoom-toggle">
-                    <span class="slider round"></span>
-                </label>
-                <span>Month</span>
+        <nav class="header-nav">
+            <div id="controls-container" class="controls-container">
+                <div class="zoom-control">
+                    <span>Year</span>
+                    <label class="switch">
+                        <input type="checkbox" id="zoom-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Month</span>
+                </div>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button id="login-btn" class="auth-btn">Login</button>
+                <div id="user-info" style="display: none;">
+                    <span id="user-email"></span>
+                    <button id="logout-btn" class="auth-btn">Logout</button>
+                </div>
+                <button id="add-event-btn" class="add-btn"><i class="fas fa-plus"></i> Add Event</button>
             </div>
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-            </div>
-            <button id="login-btn" class="auth-btn">Login</button>
-            <div id="user-info" style="display: none;">
-                <span id="user-email"></span>
-                <button id="logout-btn" class="auth-btn">Logout</button>
-            </div>
-            <button id="add-event-btn" class="add-btn"><i class="fas fa-plus"></i> Add Event</button>
-        </div>
+        </nav>
+        <button id="mobile-menu-btn" class="mobile-menu-btn">
+            <i class="fas fa-ellipsis-v"></i>
+        </button>
     </header>
     <div id="timeline-container">
         <!-- Events will be dynamically inserted here -->
