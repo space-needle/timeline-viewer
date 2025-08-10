@@ -137,13 +137,17 @@ header h1 {
 
 /* Button Style */
 .add-btn {
-    padding: 8px 12px;
     background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 0.9em;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .add-btn:hover {
@@ -227,13 +231,17 @@ header h1 {
 }
 
 .auth-btn {
-    padding: 8px 12px;
     background-color: #6c757d;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 0.9em;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .auth-btn:hover {
