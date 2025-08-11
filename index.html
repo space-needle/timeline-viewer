@@ -11,26 +11,21 @@
 <body>
     <header>
         <h1>Timeline</h1>
-        <nav class="header-nav">
-            <div id="controls-container" class="controls-container">
-                <div class="zoom-control">
-                    <button id="zoom-out-btn" class="zoom-btn" title="Zoom Out to Year View"><i class="fas fa-minus"></i></button>
-                    <button id="zoom-in-btn" class="zoom-btn" title="Zoom In to Month View"><i class="fas fa-plus"></i></button>
-                </div>
-                <div class="search-container">
-                    <i class="fas fa-search"></i>
-                </div>
-            <button id="login-btn" class="auth-btn" title="Login / Sign Up"><i class="fas fa-sign-in-alt"></i></button>
-                <div id="user-info" style="display: none;">
-                    <span id="user-email"></span>
-                <button id="logout-btn" class="auth-btn" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
-                </div>
-            <button id="add-event-btn" class="add-btn" title="Add New Event"><i class="fas fa-plus"></i></button>
+        <div id="controls-container" class="controls-container">
+            <div class="zoom-control">
+                <button id="zoom-out-btn" class="zoom-btn" title="Zoom Out to Year View"><i class="fas fa-minus"></i></button>
+                <button id="zoom-in-btn" class="zoom-btn" title="Zoom In to Month View"><i class="fas fa-plus"></i></button>
             </div>
-        </nav>
-        <button id="mobile-menu-btn" class="mobile-menu-btn">
-            <i class="fas fa-ellipsis-v"></i>
-        </button>
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+            </div>
+            <button id="login-btn" class="auth-btn" title="Login / Sign Up"><i class="fas fa-sign-in-alt"></i></button>
+            <div id="user-info" style="display: none;">
+                <span id="user-email"></span>
+                <button id="logout-btn" class="auth-btn" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+            <button id="add-event-btn" class="add-btn" title="Add New Event"><i class="fas fa-plus"></i></button>
+        </div>
     </header>
     <div id="timeline-container">
         <!-- Events will be dynamically inserted here -->
